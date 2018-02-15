@@ -100,7 +100,7 @@ void kukaFT::on_start(double time)
 		    Eigen::Vector3d desTranslation;
 		    desRotation.setIdentity();
 // 		    desTranslation.setZero();
-		    desTranslation << 0,-0.2,0;
+		    desTranslation << 0,-0.5,0;
                     desCartAffine.linear() =  desRotation;
                     desCartAffine.translation() = desTranslation;
                     desCartAffine = initialCartAffine * desCartAffine;
@@ -148,12 +148,11 @@ void kukaFT::control_loop(double time, double period)
       Eigen::VectorXd desiredTorque(7),desiredForce(6), calcTorque(7), gravity(7);
       Eigen::MatrixXd J,J_pinv;
       _robot->model().update();
-//       _robot->model().getJacobian(end_effector,J);
-//       J_pinv = J.transpose() * (J*J.transpose()).inverse();
       _robot->model().getPose(end_effector,msrdCartAffine);
       _logger->add("msrdCartAffine",msrdCartAffine.matrix());
       _robot->getJointPosition(jntPos);
-      J = utils::calcKukaJacob(jntPos.data());
+      _robot->model().getJacobian(end_effector,J);
+//       J = utils::calcKukaJacob(jntPos.data());
       
       msrdCartScrew = utils::getScrewFromAffine(msrdCartAffine);
       _logger->add("msrdCartScrew", msrdCartScrew);
