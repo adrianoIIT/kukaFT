@@ -181,11 +181,11 @@ class utils
         return quinticCoeffs[5]*pow(t,5.) + quinticCoeffs[4]*pow(t,4.) + quinticCoeffs[3]*pow(t,3.) + quinticCoeffs[2]*pow(t,2.) + quinticCoeffs[1]*t + quinticCoeffs[0];
     }
     
-    static Eigen::Affine3d nextStepCircular(Eigen::Affine3d &initAffine, float t, float period, float radius, Eigen::Vector3d &center)
+    static Eigen::Affine3d nextStepCircular(Eigen::Affine3d &initAffine, double t, double period, double radius, Eigen::Vector3d &center)
     {
-	float omega = (2*M_PI)/(period);
-	float x = - radius*cos(omega*t) + center(0); //+ initAffine.translation()(0);
-	float y = radius*sin(omega*t) + center(1); // + initAffine.translation()(1);
+	double omega = (2*M_PI)/(period);
+	double x = - radius*cos(omega*t) + center(0); //+ initAffine.translation()(0);
+	double y = radius*sin(omega*t) + center(1); // + initAffine.translation()(1);
 	
 // 	Eigen::VectorXf nextScrew(6);
 // 	nextScrew.setZero(6);

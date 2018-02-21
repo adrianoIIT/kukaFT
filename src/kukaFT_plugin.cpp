@@ -100,7 +100,7 @@ void kukaFT::on_start(double time)
 		    Eigen::Vector3d desTranslation;
 		    desRotation.setIdentity();
 // 		    desTranslation.setZero();
-		    desTranslation << 0,-0.5,0;
+		    desTranslation << 0,-0.4,-0.4;
                     desCartAffine.linear() =  desRotation;
                     desCartAffine.translation() = desTranslation;
                     desCartAffine = initialCartAffine * desCartAffine;
@@ -181,17 +181,16 @@ void kukaFT::control_loop(double time, double period)
                              {
                                  relativeNextDesiredScrew(i) = utils::nextStepQuintic(quinticTrajCoeffs[i], timeCounter);
                              }
-                        }
-
-		       /*desCartAffine = utils::nextStepCircular(initialCartAffine,timeCounter,period,radius,center);
-                       _logger->add("desCartAffine", desCartAffine.matrix());
-		       relativeNextDesiredScrew = utils::getScrewErrorFromAffine(initialCartAffine, desCartAffine);*/	  
-		       
+                        }	  
+                        
                        relativeNextDesiredAffine = utils::getAffineFromScrew(relativeNextDesiredScrew);
                        nextDesiredAffine = initialCartAffine * relativeNextDesiredAffine;
+	
+			// Circular trajectory
+//                        nextDesiredAffine = utils::nextStepCircular(initialCartAffine,timeCounter,period,radius,center);
                        _logger->add("nextDesiredAffine", nextDesiredAffine.matrix());
 		   
-	               desCartScrew = utils::getScrewFromAffine(desCartAffine);
+	               desCartScrew = utils::getScrewFromAffine(nextDesiredAffine);
                        _logger->add("desCartScrew", desCartScrew);
                    
 
@@ -210,6 +209,7 @@ void kukaFT::control_loop(double time, double period)
                        if (firstLoopCmd)                   
                        {
                            screwErrorPrev = desScrewError;
+			   firstLoopCmd = false;
                        }
                        desTwistError = (desScrewError - screwErrorPrev) / deltaT;
                        _logger->add("desTwistError", desTwistError);
